@@ -4,7 +4,11 @@ wget https://video.udacity-data.com/topher/2020/October/5f8f4412_bx-csv-data/bx-
 unzip bx-csv-data.zip
 
 # Place data inside HDFS 
-hdfs dfs -put BX-CSV-Data /user/csv-data
+hdfs dfs -put BX-CSV-Data/BX-Book-Ratings.csv /user/csv-data/BX-Book-Ratings.csv
+hdfs dfs -put BX-CSV-Data/BX-Books.csv /user/csv-data/BX-Books.csv
+hdfs dfs -put BX-CSV-Data/BX-Users.csv /user/csv-data/BX-Users.csv
+
+hive 
 
 # Creating a new database
 CREATE DATABASE book_db;
@@ -17,24 +21,46 @@ CREATE EXTERNAL TABLE IF NOT EXISTS bxUsers(
     Location string,
     Age int
 ) 
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY '|' 
+ROW FORMAT 
+DELIMITED FIELDS 
+TERMINATED BY '|' 
+STORED AS TEXTFILE
 LOCATION '/user/csv-data'
 tblproperties ("skip.header.line.count"="1");
 
 CREATE EXTERNAL TABLE IF NOT EXISTS bxBooks(
-    ISBN int,
-    BookTitle string,
-    BookAuthor string,
-    YearOfPublication int,
-    Publisher string, 
-    ImageURLS string, 
-    ImageURLM string,
-    ImageURLL string
+    isbn String,
+    title String,
+    author String,
+    year_of_publication String,
+    publisher String,
+    image_url_s String,
+    image_url_m String,
+    image_url_l String
 ) 
-ROW FORMAT DELIMITED
-FIELDS TERMINATED BY '|' 
+ROW FORMAT 
+DELIMITED FIELDS 
+TERMINATED BY '|'
+STORED AS TEXTFILE 
 LOCATION '/user/csv-data'
 tblproperties ("skip.header.line.count"="1");
 
 
+CREATE EXTERNAL TABLE IF NOT EXISTS bxBookRatings(
+    UserID int,
+    ISBN int,
+    rating int
+) 
+ROW FORMAT 
+DELIMITED FIELDS 
+TERMINATED BY '|'
+STORED AS TEXTFILE 
+LOCATION '/user/csv-data'
+tblproperties ("skip.header.line.count"="1");
+
+# Running th necessary queries for business cases
+
+SELECT * 
+FROM bxBookRatings as r
+JOIN bxUsers as u 
+ON r.UserId = u.UserId;
