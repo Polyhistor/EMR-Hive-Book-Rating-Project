@@ -57,10 +57,19 @@ TERMINATED BY '|'
 STORED AS TEXTFILE 
 LOCATION '/user/csv-data'
 tblproperties ("skip.header.line.count"="1");
-
 # Running th necessary queries for business cases
 
-SELECT * 
-FROM bxBookRatings as r
-JOIN bxUsers as u 
-ON r.UserId = u.UserId;
+SELECT COUNT(DISTINCT userid) 
+FROM book_db.bx_users 
+WHERE age IS NOT NULL or age != "NULL";
+
+SELECT COUNT(*) 
+FROM book_db.bx_users
+WHERE age >= 21 AND age <= 30;
+
+books they have published. */
+SELECT author, COUNT(title) as total_books_published 
+FROM book_db.bx_books
+GROUP BY author 
+ORDER BY total_books_published DESC 
+LIMIT 5;
